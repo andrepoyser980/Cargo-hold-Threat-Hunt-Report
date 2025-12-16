@@ -225,7 +225,7 @@ I refined the query to include the AccountName “admin” since the name of the
 <img width="850" height="450" alt="image" src="https://github.com/user-attachments/assets/85c2d107-a98a-4717-9887-e5dd5585d59f" />
 
 
-Timeline **2025-11-22T01:03:55.6767092Z**: Suspicious **powesrhell process** was created. The location for the path is also suspicious “**C:\Windows\Logs\CBS\ex.ps1**”
+Timestamp **2025-11-22T01:03:55.6767092Z**: Suspicious **powesrhell process** was created. The location for the path is also suspicious “**C:\Windows\Logs\CBS\ex.ps1**”
 Command:
 
 ```
@@ -259,7 +259,7 @@ Timestamp **2025-11-22T02:04:43.7036166Z**: A **hidden powershell command** was 
 
 <img width="520" height="450" alt="image" src="https://github.com/user-attachments/assets/13ee43bf-2b3c-4fa7-95c7-f2a1e4295e5c" />
 
-**Query 4**
+**Query 4**-
 
 Powershell commands:
 
@@ -276,7 +276,7 @@ DeviceProcessEvents
 | order by Timestamp asc
 
 ```
-Timeline **2025-11-22T02:11:13.892171Z** PowerShell command executed:
+Timestamp **2025-11-22T02:11:13.892171Z**: PowerShell command executed:
 
 ```
 "powershell.exe" -NoP -W Hidden -File C:\Windows\System32\svchost.ps1
@@ -300,7 +300,7 @@ Timestamp **2025-11-22T00:40:33.3168699Z**: First enumeration from the “**azuk
 
 <img width="850" height="253" alt="image" src="https://github.com/user-attachments/assets/18debad4-f396-4e47-b9ee-1fa5d9fb5df4" />
 
-**Query 6**
+**Query 6**-
 Checked for user privilege enumeration:
 
 ```
@@ -314,7 +314,7 @@ DeviceProcessEvents
 
 ```
 
-Timestamp **2025-11-22T00:40:09.3456568Z** “**whoami**” command was initiated on **fileserver01** remotely from device **azuki-sl** and user **fileadmin**.
+Timestamp **2025-11-22T00:40:09.3456568Z**: “**whoami**” command was initiated on **fileserver01** remotely from device **azuki-sl** and user **fileadmin**.
 
 <img width="550" height="635" alt="image" src="https://github.com/user-attachments/assets/dd9b04c0-58ec-4f5b-97a6-bf8a72876375" />
 
